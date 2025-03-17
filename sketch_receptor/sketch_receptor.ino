@@ -8,7 +8,7 @@ WiFiUDP udp;
 const int udpPort = 8989;
 
 int compteur = 0;
-float distanceSeuil = 10;
+float distanceSeuil = 400;
 
 void setup() {
     Serial.begin(115200);
@@ -37,7 +37,7 @@ void loop() {
             packetBuffer[len] = '\0';
         }
 
-        float distance = atof(packetBuffer);
+        long distance = atol(packetBuffer);
         Serial.print("Reçu: ");
         Serial.println(distance);
 
