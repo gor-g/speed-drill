@@ -16,7 +16,7 @@ const int udpPort = 8989;
 
 const int ULTRASONIC_PIN = 7;
 
-const int DETECTION_TRESHOLD_CM = 200;
+const int DETECTION_TRESHOLD_CM = 100;
 
 
 

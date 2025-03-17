@@ -8,11 +8,40 @@ WiFiUDP udp;
 const int udpPort = 8989;
 
 int compteur = 0;
-float distanceSeuil = 400;
+
+
+const int BUZZER_PIN = 7;
+
+const float DISTANCE = 100; // meters
+const float TIME = 10*1000; // seconds
+const int CHECKPOINTS = 3;
+const float INTER_CHECKPOINTS_DURATION = TIME/CHECKPOINTS;
+
+
+// button stuff
+const int ledPin = 3;      // the number of the LED pin, D3
+const int buttonPin = 4;    // the number of the pushbutton pin, D4
+int buttonState;
+
+unsigned long startTime;
+unsigned long elapsedTime;
+
+
 
 void setup() {
+
+    
+
     Serial.begin(115200);
     Serial.println("Estiablishing WiFi...");
+
+    pinMode(buttonPin, INPUT);
+    pinMode(ledPin, OUTPUT);
+    digitalWrite(ledPin, HIGH);
+
+
+    startTime = millis();
+    pinMode(BUZZER_PIN, OUTPUT);
 
     // creating the wifi access point
     if (WiFi.beginAP(ssid, password)) {
@@ -29,6 +58,16 @@ void setup() {
 
 void loop() {
     char packetBuffer[255]; // Buffer to tore the recieved data
+    
+    int reading = digitalRead(buttonPin);
+    if (reading != buttonState) {
+          buttonState = reading;
+      if (buttonState == LOW) {  //button is pressed
+          startTime = millis();
+      }
+    }
+
+    elapsedTime = millis() - startTime;
 
     int packetSize = udp.parsePacket();
     if (packetSize) {
@@ -38,19 +77,46 @@ void loop() {
         }
 
         long distance = atol(packetBuffer);
-        Serial.print("Reçu: ");
+        Serial.print("Recieved: ");
         Serial.println(distance);
 
         // Vérification de la distance et comptage des répétitions
-        if (distance > 0 && distance < distanceSeuil) {
+        if (distance > 0 ) {
             compteur++;
-            Serial.println(compteur);
+            Serial.println(elapsedTime);
+            if (elapsedTime < compteur*INTER_CHECKPOINTS_DURATION)
+              good_sound();
+            else
+              bad_sound();
         }
 
     }
 
-    delay(500);
+    delay(50);
 }
 
 
 
+
+
+void bad_sound() {
+    digitalWrite(BUZZER_PIN, HIGH);
+    delay(250);
+    digitalWrite(BUZZER_PIN, LOW);
+}
+
+
+
+void good_sound(){
+    digitalWrite(BUZZER_PIN, HIGH);
+    delay(20);
+    digitalWrite(BUZZER_PIN, LOW);
+    delay(50);
+    digitalWrite(BUZZER_PIN, HIGH);
+    delay(50);
+    digitalWrite(BUZZER_PIN, LOW);
+    delay(50);
+    digitalWrite(BUZZER_PIN, HIGH);
+    delay(50);
+    digitalWrite(BUZZER_PIN, LOW);
+}
