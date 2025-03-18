@@ -50,31 +50,25 @@ def process_curve(data: dict):
     inter_checkpoints_duration: float = data["INTER_CHECKPOINTS_DURATION"]
     data_values: list[int] = data["data"]
 
-    # Create a plot
+    # Create time values for the x-axis
+    time_values = list(range(len(data_values)))
+
+    # Create the plot
     plt.figure(figsize=(10, 5))
-
-    # Plot the first curve
-    plt.subplot(1, 2, 1)
-    plt.plot(data_values, label='Data Values')
-    plt.title('Data Values Over Time')
-    plt.xlabel('Time')
-    plt.ylabel('Values')
+    plt.plot(time_values, [inter_checkpoints_duration] * len(time_values), label='Max Time Between Checkpoints', linestyle='--')
+    plt.plot(time_values, data_values, label='Actual Time', marker='o')
+    plt.title('Temps entre les Checkpoints')
+    plt.xlabel('Checkpoint')
+    plt.ylabel('Temps (ms)')
     plt.legend()
-
-    # Plot the second curve (example: cumulative sum of data values)
-    plt.subplot(1, 2, 2)
-    plt.plot(range(len(data_values)), [sum(data_values[:i+1]) for i in range(len(data_values))], label='Cumulative Sum')
-    plt.title('Cumulative Sum of Data Values')
-    plt.xlabel('Time')
-    plt.ylabel('Cumulative Sum')
-    plt.legend()
+    plt.grid(True)
 
     # Save the plot to a file
-    plt.tight_layout()
-    plt.savefig('curves.png')
+    plot_path = 'curves.png'
+    plt.savefig(plot_path)
     plt.close()
 
-    return 'curves.png'
+    return plot_path
 
 # Create the Gradio interface
 udp_iface = gr.Interface(
@@ -85,7 +79,7 @@ udp_iface = gr.Interface(
         gr.Number(label="Temps (secondes)")
     ],
     outputs="text",
-    title="Envoyer un message UDP",
+    title="Paramètres",
     description="Entrez une distance à parcourir en mètres et un temps en secondes pour envoyer un message UDP."
 )
 
@@ -94,8 +88,8 @@ curve_iface = gr.Interface(
     fn=request_data,
     inputs=None,
     outputs="image",
-    title="Afficher les courbes",
-    description="Cliquez sur le bouton pour afficher les courbes."
+    title="Afficher les résultats",
+    description="Cliquez sur le bouton pour afficher les résultats."
 )
 
 # Launch the interfaces
