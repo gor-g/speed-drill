@@ -57,7 +57,7 @@ void loop() {
       udp.print(RangeInCentimeters);
       udp.endPacket();
 
-      delay(10000);
+      delay(3500);
     }
 }
 
