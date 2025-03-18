@@ -1,13 +1,12 @@
 import gradio as gr
 import socket
 
-def send_udp_message(distance_meters, time_seconds):
+def send_udp_message(distance_meters, checkpoints, time_seconds):
     dest_ip = '192.168.4.1'
     udp_port = 8989
-    range_in_centimeters = int(distance_meters * 100)  # Convert meters to centimeters
 
     # Create the message with the encapsulated values
-    message = f"-1,{range_in_centimeters},{time_seconds}"
+    message = f"-1,{distance_meters},{checkpoints},{time_seconds}"
 
     # Create a UDP socket
     sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
@@ -27,6 +26,7 @@ iface = gr.Interface(
     fn=send_udp_message,
     inputs=[
         gr.Number(label="Distance à parcourir (mètres)"),
+        gr.Number(label="Nombre de capteurs"),
         gr.Number(label="Temps (secondes)")
     ],
     outputs="text",
