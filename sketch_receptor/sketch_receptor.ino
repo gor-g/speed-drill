@@ -30,6 +30,41 @@ unsigned long elapsedTime;
 
 // setting constants
 const int SETTING_START = -1;
+const int REQUEST_DATA = -2;
+
+struct CheckpointTrace {
+  uint8_t len = 0;
+  long body[10];
+
+  // Store a new value
+  void store(long value) {
+    if (len < 10) {
+      body[len] = value;
+      len++;
+    } else {
+      Serial.println("Array is full. Cannot store more values.");
+    }
+  }
+
+  // Reset the struct
+  void reset() {
+    len = 0;
+  }
+
+  // 
+  void udpPrint() {
+    udp.print("[");
+    for (uint8_t i = 0; i < len; i++) {
+      udp.print(body[i]);
+      if (i < len - 1) {
+        udp.print(", ");
+      }
+    }
+    udp.print("]");
+  }
+};
+
+CheckpointTrace checkpointTrace;
 
 
 void setup() {
@@ -70,6 +105,8 @@ void loop() {
           countdown();
           startTime = millis();
           counter = 0;
+          checkpointTrace.reset();
+          
       }
     }
 
@@ -96,17 +133,20 @@ void loop() {
             Serial.println(elapsedTime/1000);
             Serial.println(counter*INTER_CHECKPOINTS_DURATION);
 
+            checkpointTrace.store(elapsedTime);
 
             if (elapsedTime < counter*INTER_CHECKPOINTS_DURATION)
               good_sound();
             else
               bad_sound();
+        } else if (distance == REQUEST_DATA) {
+          sendReportJson(packetBuffer);
         }
 
     }
 
     delay(50);
-}
+};
 
 
 
@@ -172,4 +212,31 @@ void countdown()
     tone(BUZZER_PIN, BUZZER_FREQUENCY + 150);
     delay(1000);
     noTone(BUZZER_PIN);
+}
+
+
+void sendReportJson(const char (&packetBuffer)[255]){
+  IPAddress remoteIP;
+  remoteIP = udp.remoteIP();  // Get the IP of the sender
+  unsigned int remotePort = udp.remotePort();
+
+  Serial.print("Received packet from ");
+  Serial.print(remoteIP);
+  Serial.print(":");
+  Serial.println(remotePort);
+  Serial.print("Data: ");
+  Serial.println(packetBuffer);
+
+  // Sending a response back
+  udp.beginPacket(remoteIP, remotePort);
+  udp.println("{");
+  udp.print("\"INTER_CHECKPOINTS_DURATION\" :");
+  udp.print(INTER_CHECKPOINTS_DURATION);
+  udp.println(",");
+  udp.print("\"data\" :");
+  checkpointTrace.udpPrint();
+  udp.println("");
+  udp.println("}");
+  udp.print(packetBuffer);
+  udp.endPacket();
 }
