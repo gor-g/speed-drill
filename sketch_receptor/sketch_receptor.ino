@@ -11,6 +11,7 @@ int counter = 0;
 
 
 const int BUZZER_PIN = 7;
+const int BUZZER_FREQUENCY = 500;
 
 float DISTANCE = 100; // meters
 float TIME = 100*1000; // seconds
@@ -112,25 +113,25 @@ void loop() {
 
 
 void bad_sound() {
-    digitalWrite(BUZZER_PIN, HIGH);
+    tone(BUZZER_PIN, BUZZER_FREQUENCY);
     delay(250);
-    digitalWrite(BUZZER_PIN, LOW);
+    noTone(BUZZER_PIN);
 }
 
 
 
 void good_sound(){
-    digitalWrite(BUZZER_PIN, HIGH);
+    tone(BUZZER_PIN, BUZZER_FREQUENCY);
     delay(20);
-    digitalWrite(BUZZER_PIN, LOW);
+    noTone(BUZZER_PIN);
     delay(50);
-    digitalWrite(BUZZER_PIN, HIGH);
+    tone(BUZZER_PIN, BUZZER_FREQUENCY);
     delay(50);
-    digitalWrite(BUZZER_PIN, LOW);
+    noTone(BUZZER_PIN);
     delay(50);
-    digitalWrite(BUZZER_PIN, HIGH);
+    tone(BUZZER_PIN, BUZZER_FREQUENCY);
     delay(50);
-    digitalWrite(BUZZER_PIN, LOW);
+    noTone(BUZZER_PIN);
 }
 
 
@@ -160,22 +161,22 @@ int processPacketBuffer(const char (&packetBuffer)[255]) {
 
 void countdown() 
 {
-    digitalWrite(BUZZER_PIN, HIGH);
+    tone(BUZZER_PIN, BUZZER_FREQUENCY);
     delay(500);
-    digitalWrite(BUZZER_PIN, LOW);
-    delay(500);
-
-    digitalWrite(BUZZER_PIN, HIGH);
-    delay(500);
-    digitalWrite(BUZZER_PIN, LOW);
+    noTone(BUZZER_PIN);
     delay(500);
 
-    digitalWrite(BUZZER_PIN, HIGH);
+    tone(BUZZER_PIN, BUZZER_FREQUENCY);
     delay(500);
-    digitalWrite(BUZZER_PIN, LOW);
+    noTone(BUZZER_PIN);
     delay(500);
 
-    digitalWrite(BUZZER_PIN, HIGH);
+    tone(BUZZER_PIN, BUZZER_FREQUENCY);
+    delay(500);
+    noTone(BUZZER_PIN);
+    delay(500);
+
+    tone(BUZZER_PIN, BUZZER_FREQUENCY);
     delay(1000);
-    digitalWrite(BUZZER_PIN, LOW);
+    noTone(BUZZER_PIN);
 }
