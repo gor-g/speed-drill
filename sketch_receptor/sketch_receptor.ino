@@ -7,7 +7,7 @@ const char* password = "supasecret";
 WiFiUDP udp;
 const int udpPort = 8989;
 
-int compteur = 0;
+int counter = 0;
 
 
 const int BUZZER_PIN = 7;
@@ -64,7 +64,7 @@ void loop() {
           buttonState = reading;
       if (buttonState == LOW) {  //button is pressed
           startTime = millis();
-          compteur = 0;
+          counter = 0;
       }
     }
 
@@ -81,11 +81,11 @@ void loop() {
         Serial.print("Recieved: ");
         Serial.println(distance);
 
-        // Vérification de la distance et comptage des répétitions
+        // Checks the distance and counts checkpoints
         if (distance > 0 ) {
-            compteur++;
+            counter++;
             Serial.println(elapsedTime);
-            if (elapsedTime < compteur*INTER_CHECKPOINTS_DURATION)
+            if (elapsedTime < counter*INTER_CHECKPOINTS_DURATION)
               good_sound();
             else
               bad_sound();
