@@ -12,10 +12,10 @@ int counter = 0;
 
 const int BUZZER_PIN = 7;
 
-const float DISTANCE = 100; // meters
-const float TIME = 100*1000; // seconds
-const int CHECKPOINTS = 3;
-const float INTER_CHECKPOINTS_DURATION = TIME/CHECKPOINTS;
+float DISTANCE = 100; // meters
+float TIME = 100*1000; // seconds
+int CHECKPOINTS = 3;
+float INTER_CHECKPOINTS_DURATION = TIME/CHECKPOINTS;
 
 
 // button stuff
@@ -26,6 +26,9 @@ int buttonState;
 unsigned long startTime;
 unsigned long elapsedTime;
 
+
+// setting constants
+const int SETTING_START = -1;
 
 
 void setup() {
@@ -57,7 +60,7 @@ void setup() {
 }
 
 void loop() {
-    char packetBuffer[255]; // Buffer to tore the recieved data
+    char packetBuffer[255]; // Buffer to store the recieved data
     
     int reading = digitalRead(buttonPin);
     if (reading != buttonState) {
@@ -77,14 +80,21 @@ void loop() {
             packetBuffer[len] = '\0';
         }
 
-        long distance = atol(packetBuffer);
+        long distance = processPacketBuffer(packetBuffer);
         Serial.print("Recieved: ");
         Serial.println(distance);
 
         // Checks the distance and counts checkpoints
         if (distance > 0 ) {
             counter++;
-            Serial.println(elapsedTime);
+            Serial.println("stats: ");
+
+            Serial.println(counter);
+            Serial.println(INTER_CHECKPOINTS_DURATION/1000);
+            Serial.println(elapsedTime/1000);
+            Serial.println(counter*INTER_CHECKPOINTS_DURATION);
+
+
             if (elapsedTime < counter*INTER_CHECKPOINTS_DURATION)
               good_sound();
             else
@@ -120,4 +130,29 @@ void good_sound(){
     digitalWrite(BUZZER_PIN, HIGH);
     delay(50);
     digitalWrite(BUZZER_PIN, LOW);
+}
+
+
+// Function to parse packetBuffer and set global variables
+int processPacketBuffer(const char (&packetBuffer)[255]) {
+    // Convert the char array to a String
+    String packetString = String(packetBuffer);
+    Serial.print("message : ");
+    Serial.println(packetString);
+    // Check if the string contains a comma
+    if (packetString.indexOf(',') != -1) {
+        // Split the string into three parts
+        int firstCommaIndex = packetString.indexOf(',');
+        int secondCommaIndex = packetString.indexOf(',', firstCommaIndex + 1);
+
+        DISTANCE = packetString.substring(0, firstCommaIndex).toFloat();
+        TIME = packetString.substring(firstCommaIndex + 1, secondCommaIndex).toFloat()*1000;
+        CHECKPOINTS = packetString.substring(secondCommaIndex + 1).toInt();
+        INTER_CHECKPOINTS_DURATION = TIME/CHECKPOINTS;
+        // Return -1 to indicate that the string was split
+        return -1;
+    } else {
+        // Parse the string as a positive number
+        return packetString.toInt();
+    }
 }

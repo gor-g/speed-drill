@@ -6,7 +6,7 @@ def send_udp_message(distance_meters, checkpoints, time_seconds):
     udp_port = 8989
 
     # Create the message with the encapsulated values
-    message = f"-1,{distance_meters},{checkpoints},{time_seconds}"
+    message = f"{distance_meters},{time_seconds},{checkpoints}"
 
     # Create a UDP socket
     sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
