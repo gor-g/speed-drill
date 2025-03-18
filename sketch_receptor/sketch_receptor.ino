@@ -67,9 +67,9 @@ void loop() {
     if (reading != buttonState) {
           buttonState = reading;
       if (buttonState == LOW) {  //button is pressed
+          countdown();
           startTime = millis();
           counter = 0;
-          countdown();
       }
     }
 
@@ -161,22 +161,15 @@ int processPacketBuffer(const char (&packetBuffer)[255]) {
 
 void countdown() 
 {
-    tone(BUZZER_PIN, BUZZER_FREQUENCY);
-    delay(500);
-    noTone(BUZZER_PIN);
-    delay(500);
+    for (int i = 0; i < 3; ++i)
+    {
+        tone(BUZZER_PIN, BUZZER_FREQUENCY + (i * 10));
+        delay(500);
+        noTone(BUZZER_PIN);
+        delay(500);
+    }
 
-    tone(BUZZER_PIN, BUZZER_FREQUENCY);
-    delay(500);
-    noTone(BUZZER_PIN);
-    delay(500);
-
-    tone(BUZZER_PIN, BUZZER_FREQUENCY);
-    delay(500);
-    noTone(BUZZER_PIN);
-    delay(500);
-
-    tone(BUZZER_PIN, BUZZER_FREQUENCY);
+    tone(BUZZER_PIN, BUZZER_FREQUENCY + 150);
     delay(1000);
     noTone(BUZZER_PIN);
 }
