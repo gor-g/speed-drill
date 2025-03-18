@@ -13,7 +13,7 @@ int compteur = 0;
 const int BUZZER_PIN = 7;
 
 const float DISTANCE = 100; // meters
-const float TIME = 10*1000; // seconds
+const float TIME = 100*1000; // seconds
 const int CHECKPOINTS = 3;
 const float INTER_CHECKPOINTS_DURATION = TIME/CHECKPOINTS;
 
@@ -64,6 +64,7 @@ void loop() {
           buttonState = reading;
       if (buttonState == LOW) {  //button is pressed
           startTime = millis();
+          compteur = 0;
       }
     }
 
