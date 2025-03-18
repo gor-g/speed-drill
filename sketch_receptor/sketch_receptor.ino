@@ -68,6 +68,7 @@ void loop() {
       if (buttonState == LOW) {  //button is pressed
           startTime = millis();
           counter = 0;
+          countdown();
       }
     }
 
@@ -155,4 +156,26 @@ int processPacketBuffer(const char (&packetBuffer)[255]) {
         // Parse the string as a positive number
         return packetString.toInt();
     }
+}
+
+void countdown() 
+{
+    digitalWrite(BUZZER_PIN, HIGH);
+    delay(500);
+    digitalWrite(BUZZER_PIN, LOW);
+    delay(500);
+
+    digitalWrite(BUZZER_PIN, HIGH);
+    delay(500);
+    digitalWrite(BUZZER_PIN, LOW);
+    delay(500);
+
+    digitalWrite(BUZZER_PIN, HIGH);
+    delay(500);
+    digitalWrite(BUZZER_PIN, LOW);
+    delay(500);
+
+    digitalWrite(BUZZER_PIN, HIGH);
+    delay(1000);
+    digitalWrite(BUZZER_PIN, LOW);
 }
