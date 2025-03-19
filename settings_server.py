@@ -55,11 +55,11 @@ def process_curve(data: dict):
 
     # Create the plot
     plt.figure(figsize=(10, 5))
-    plt.plot(time_values, [inter_checkpoints_duration * i for i in range(1, len(time_values) + 1)], label='Max Time Between Checkpoints', linestyle='--')
-    plt.plot(time_values, data_values, label='Actual Time', marker='o')
-    plt.title('Temps entre les Checkpoints')
+    plt.plot(time_values, [inter_checkpoints_duration * i for i in range(1, len(time_values) + 1)], label='Temps maximal entre les checkpoints', linestyle='--')
+    plt.plot(time_values, data_values, label='Temps actuel', marker='o')
+    plt.title('Temps entre les checkpoints')
     plt.xlabel('Checkpoint')
-    plt.ylabel('Temps (s)')
+    plt.ylabel('Temps (en s)')
     plt.legend()
     plt.grid(True)
 
