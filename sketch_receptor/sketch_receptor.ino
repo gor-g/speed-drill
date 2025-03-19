@@ -240,6 +240,5 @@ void sendReportJson(const char (&packetBuffer)[255]){
   checkpointTrace.udpPrint();
   udp.println("");
   udp.println("}");
-  udp.print(packetBuffer);
   udp.endPacket();
 }
