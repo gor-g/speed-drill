@@ -233,6 +233,9 @@ void sendReportJson(const char (&packetBuffer)[255]){
   udp.print("\"INTER_CHECKPOINTS_DURATION\" :");
   udp.print(INTER_CHECKPOINTS_DURATION);
   udp.println(",");
+  udp.print("\"distance\" :");
+  udp.print(DISTANCE);
+  udp.println(",");
   udp.print("\"data\" :");
   checkpointTrace.udpPrint();
   udp.println("");

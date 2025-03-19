@@ -49,6 +49,7 @@ def request_data():
 def process_curve(data: dict):
     inter_checkpoints_duration: float = data["INTER_CHECKPOINTS_DURATION"]/1000
     data_values: list[int] = [d/1000 for d in data["data"]]
+    distance: float = data["distance"]
 
     # Create time values for the x-axis
     time_values = list(range(len(data_values)))
@@ -57,7 +58,7 @@ def process_curve(data: dict):
     plt.figure(figsize=(10, 5))
     plt.plot(time_values, [inter_checkpoints_duration * i for i in range(1, len(time_values) + 1)], label='Temps maximal entre les checkpoints', linestyle='--')
     plt.plot(time_values, data_values, label='Temps actuel', marker='o')
-    plt.title('Temps entre les checkpoints')
+    plt.title(f'Temps entre les checkpoints pour un {distance} mètres')
     plt.xlabel('Checkpoint')
     plt.ylabel('Temps (en s)')
     plt.legend()
